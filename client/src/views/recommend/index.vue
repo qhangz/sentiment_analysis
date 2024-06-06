@@ -3,7 +3,7 @@
     <el-card class="box-card">
       <div class="tip" style="text-align: center;">
         您感兴趣的视频:
-        <el-select v-model="course_key" placeholder="请选择课程" style="padding-top:10px; padding-bottom:10px;">
+        <el-select v-model="course_key" placeholder="请选择类型" style="padding-top:10px; padding-bottom:10px;">
         <el-option
           v-for="item in course_key_options"
           :key="item.value"
@@ -122,9 +122,6 @@ export default {
         }, {
           value: '视频质量',
           label: '视频质量'
-        }, {
-          value: '课件质量',
-          label: '课件质量'
         }],
         concern_category: '',
         difficulty_coefficient_options: [{

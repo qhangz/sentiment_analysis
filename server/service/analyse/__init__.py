@@ -21,7 +21,7 @@ def register(app: flask.Flask, data_db: sqlite3.Connection):
         return flask.send_file(
             io.BytesIO(img_bytes),
             mimetype='image/png',  # Set MIME type to PNG
-            as_attachment=True,
+            as_attachment=False,
             download_name='result_image.png'
         )
         # # Convert image bytes to base64 string
@@ -68,9 +68,22 @@ def register(app: flask.Flask, data_db: sqlite3.Connection):
     def text_analyse():
         text = flask.request.form['text']
         result = model_analyse.analyseText(text)
+        if result < 0.5:
+            sentiment = '消极'
+        elif result > 0.5:
+            sentiment = '积极'
+        else:
+            sentiment = '中立'
 
         # Prepare response data
         response_data = {
             'probability': result,
+            'sentiment': sentiment
         }
         return utils.Resp(200, response_data, 'register successfully').to_json()
+
+    @app.route('/api/analyse/toptext', methods=['POST'])
+    def top_text():
+        url = flask.request.form['url']
+        top_text = model_analyse.topTextBarrage_(url)
+        return utils.Resp(200, top_text, 'register successfully').to_json()

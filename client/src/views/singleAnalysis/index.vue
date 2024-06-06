@@ -4,7 +4,8 @@
       <div class="tip">
         请输入要进行情感分析的评论:
       </div>
-      <el-input v-model="textarea" type="textarea" :disabled="stage" :rows="6" placeholder="请输入要进行方面级情感分析的文本" clearable />
+      <el-input v-model="textarea" type="textarea" :disabled="stage" :rows="6" placeholder="请输入要进行情感分析的文本"
+        clearable />
     </el-card>
     <el-row style="text-align: center; padding-top:20px; padding-bottom:20px;">
       <el-button type="info" round @click="clear()">清空内容</el-button>
@@ -12,32 +13,15 @@
     </el-row>
     <el-card v-show="visible" class="box-card">
       <div v-show="visible" class="tip">
-        方面级情感分析结果:
+        情感分析结果:  {{ analysisResult.sentiment }}, {{ analysisResult.probability }}
       </div>
       <!-- <el-input v-show="visible" v-model="result" type="textarea" :rows="13" /> -->
-      <el-table
-        :data="analysisResult"
-        height="290"
-        border
-        style="width: 100%"
-      >
-        <el-table-column
-          prop="aspect"
-          label="方面"
-        />
-        <el-table-column
-          prop="category"
-          label="类别"
-        />
-        <el-table-column
-          prop="opinions"
-          label="观点"
-        />
-        <el-table-column
-          prop="sentiment"
-          label="情感"
-        />
-      </el-table>
+      <!-- <el-table :data="analysisResult" height="290" border style="width: 100%">
+        <el-table-column prop="aspect" label="方面" />
+        <el-table-column prop="category" label="类别" />
+        <el-table-column prop="opinions" label="观点" />
+        <el-table-column prop="sentiment" label="情感" />
+      </el-table> -->
     </el-card>
   </div>
 </template>
@@ -78,30 +62,57 @@ export default {
         that.analysisResult = ''
         that.visible = false
       } else {
-        // 请求后端单文本情感分析接口，请求方法为POST，请求体格式为JSON，字段text为要进行情感分析的文本
-        axios.post('http://127.0.0.1:8000/v1/singleEmotionAnalysis', {
-          text: that.textarea
-        }).then((response) => {
-          console.log(response.data)
-          // 获取接口返回的情感分析预测结果并更新界面数据
-          that.analysisResult = response.data.singleAnalysisResult
-          that.visible = true
-          that.$message({
-            showClose: true,
-            message: '方面级情感分析完成！',
-            type: 'success'
+        let formData = new FormData();
+        formData.append('text', that.textarea);
+
+        axios.post('http://localhost:5000/api/analyse/text', formData)
+          .then((response) => {
+            console.log(response.data.data.probability);
+            // 获取接口返回的情感分析预测结果并更新界面数据
+            that.analysisResult = response.data.data;
+            that.visible = true;
+            that.$message({
+              showClose: true,
+              message: '情感分析完成！',
+              type: 'success'
+            });
           })
-        }).catch((error) => {
-          // 捕获异常并弹窗提示
-          console.log(error)
-          that.analysisResult = ''
-          that.visible = false
-          that.$message({
-            showClose: true,
-            message: '请求异常，请检查后端服务模块！',
-            type: 'error'
-          })
-        })
+          .catch((error) => {
+            // 捕获异常并弹窗提示
+            console.log(error);
+            that.analysisResult = '';
+            that.visible = false;
+            that.$message({
+              showClose: true,
+              message: '请求异常，请检查后端服务模块！',
+              type: 'error'
+            });
+          });
+
+        // // 请求后端单文本情感分析接口，请求方法为POST，请求体格式为JSON，字段text为要进行情感分析的文本
+        // axios.post('http://localhost:5000/api/analyse/text', {
+        //   text: that.textarea
+        // }).then((response) => {
+        //   console.log(response.data)
+        //   // 获取接口返回的情感分析预测结果并更新界面数据
+        //   that.analysisResult = response.data.singleAnalysisResult
+        //   that.visible = true
+        //   that.$message({
+        //     showClose: true,
+        //     message: '情感分析完成！',
+        //     type: 'success'
+        //   })
+        // }).catch((error) => {
+        //   // 捕获异常并弹窗提示
+        //   console.log(error)
+        //   that.analysisResult = ''
+        //   that.visible = false
+        //   that.$message({
+        //     showClose: true,
+        //     message: '请求异常，请检查后端服务模块！',
+        //     type: 'error'
+        //   })
+        // })
       }
     }
   }
@@ -109,10 +120,10 @@ export default {
 </script>
 
 <style scoped>
-  .tip {
-    font-family: 宋体;
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
+.tip {
+  font-family: 宋体;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
 </style>

@@ -4,6 +4,7 @@ import sqlite3
 import os
 from service.data import create_database
 import service.analyse
+import service.gpt
 
 
 app = Flask(__name__)
@@ -25,6 +26,7 @@ data_db.isolation_level = None
 
 # 服务注册
 service.analyse.register(app, data_db)
+service.gpt.register(app, data_db)
 
 @app.route("/")
 def hello_world():

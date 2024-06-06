@@ -4,15 +4,8 @@
       <div class="tip">
         请上传要进行批量分析的txt文件:
       </div>
-      <el-upload
-        class="upload-demo"
-        drag
-        action=""
-        :limit="1"
-        :http-request="uploadFile"
-        accept=".txt"
-        style="text-align: center; padding-top:10px;padding-bottom:10px;"
-      >
+      <el-upload class="upload-demo" drag action="" :limit="1" :http-request="uploadFile" accept=".txt"
+        style="text-align: center; padding-top:10px;padding-bottom:10px;">
         <i class="el-icon-upload" />
         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
       </el-upload>
@@ -27,29 +20,11 @@
       <div v-show="visible" class="tip">
         批量情感分析结果：
       </div>
-      <el-table
-        id="excel"
-        :data="analysisResults"
-        height="290"
-        border
-        style="width: 100%"
-      >
-        <el-table-column
-          prop="aspect"
-          label="方面"
-        />
-        <el-table-column
-          prop="category"
-          label="类别"
-        />
-        <el-table-column
-          prop="opinions"
-          label="观点"
-        />
-        <el-table-column
-          prop="sentiment"
-          label="情感"
-        />
+      <el-table id="excel" :data="analysisResults" height="290" border style="width: 100%">
+        <el-table-column prop="aspect" label="方面" />
+        <el-table-column prop="category" label="类别" />
+        <el-table-column prop="opinions" label="观点" />
+        <el-table-column prop="sentiment" label="情感" />
       </el-table>
       <el-row style="text-align: center; padding-top:20px;padding-bottom:20px;">
         <el-button type="primary" round @click="aspect_wc_visual()">方面频率词云图</el-button>
@@ -63,13 +38,13 @@
     <el-row style="text-align: center; padding-top:10px;padding-bottom:10px;"></el-row>
     <!--分析结果可视化-->
     <el-card v-show="aw_visible" class="box-card">
-      <div ref="aspect_wc" class="chart-container"/>
+      <div ref="aspect_wc" class="chart-container" />
     </el-card>
-    <el-card v-show="ah_visible" class="box-card" >
-      <div ref="aspect_hist" class="chart-container"/>
+    <el-card v-show="ah_visible" class="box-card">
+      <div ref="aspect_hist" class="chart-container" />
     </el-card>
     <el-card v-show="aow_visible" class="box-card">
-      <div ref="aspect_opinion_wc" class="chart-container"/>
+      <div ref="aspect_opinion_wc" class="chart-container" />
     </el-card>
     <el-card v-show="aoh_visible" class="box-card">
       <div ref="aspect_opinion_hist" class="chart-container" />
@@ -257,7 +232,7 @@ export default {
     // 图2
     aspect_hist_visual() {
       var that = this
-      that.aw_visible = false;  that.ah_visible = true;   that.aow_visible = false;
+      that.aw_visible = false; that.ah_visible = true; that.aow_visible = false;
       that.aoh_visible = false; that.asw_visible = false; that.ash_visible = false;
       var aspect_hist_chart = echarts.init(this.$refs.aspect_hist);
       var aspect_hist_option = {
@@ -276,7 +251,7 @@ export default {
           nameGap: 50, // 设置标题与轴线之间的距离
           type: 'category',
           data: this.aspect_hist_x_data,
-          boundaryGap: ['10%','10%'],   //两边留白
+          boundaryGap: ['10%', '10%'],   //两边留白
           axisLabel: {  //x轴文字的配置
             show: true,
             interval: 0,//使x轴文字显示全
@@ -289,13 +264,13 @@ export default {
           nameLocation: 'middle', // 设置标题位置
           nameGap: 20, // 设置标题与轴线之间的距离
           type: 'value',
-          axisLine:{show:true},
-          axisTick:{show:true}
+          axisLine: { show: true },
+          axisTick: { show: true }
         },
         {
           type: 'value',
-          axisLine:{show:true},
-          axisTick:{show:true}
+          axisLine: { show: true },
+          axisTick: { show: true }
         }],
         series: [{
           data: this.aspect_hist_y_data,
@@ -311,7 +286,7 @@ export default {
     // 图3
     aspect_opinion_wc_visual() {
       var that = this
-      that.aw_visible = false;  that.ah_visible = false;  that.aow_visible = true;
+      that.aw_visible = false; that.ah_visible = false; that.aow_visible = true;
       that.aoh_visible = false; that.asw_visible = false; that.ash_visible = false;
       var aspect_opinion_wc_chart = echarts.init(this.$refs.aspect_opinion_wc);
       var aspect_opinion_wc_option = {
@@ -340,7 +315,7 @@ export default {
     // 图4
     aspect_opinion_hist_visual() {
       var that = this
-      that.aw_visible = false; that.ah_visible = false;  that.aow_visible = false;
+      that.aw_visible = false; that.ah_visible = false; that.aow_visible = false;
       that.aoh_visible = true; that.asw_visible = false; that.ash_visible = false;
       var aspect_opinion_hist_chart = echarts.init(this.$refs.aspect_opinion_hist);
       var aspect_opinion_hist_option = {
@@ -359,7 +334,7 @@ export default {
           nameGap: 50, // 设置标题与轴线之间的距离
           type: 'category',
           data: this.aspect_opinion_hist_x_data,
-          boundaryGap: ['10%','10%'],   //两边留白
+          boundaryGap: ['10%', '10%'],   //两边留白
           axisLabel: {  //x轴文字的配置
             show: true,
             interval: 0,//使x轴文字显示全
@@ -372,13 +347,13 @@ export default {
           nameLocation: 'middle', // 设置标题位置
           nameGap: 20, // 设置标题与轴线之间的距离
           type: 'value',
-          axisLine:{show:true},
-          axisTick:{show:true}
+          axisLine: { show: true },
+          axisTick: { show: true }
         },
         {
           type: 'value',
-          axisLine:{show:true},
-          axisTick:{show:true},
+          axisLine: { show: true },
+          axisTick: { show: true },
         }],
         series: [{
           data: this.aspect_opinion_hist_y_data,
@@ -394,7 +369,7 @@ export default {
     // 图5
     aspect_sentiment_wc_visual() {
       var that = this
-      that.aw_visible = false;  that.ah_visible = false;  that.aow_visible = false;
+      that.aw_visible = false; that.ah_visible = false; that.aow_visible = false;
       that.aoh_visible = false; that.asw_visible = true; that.ash_visible = false;
       var aspect_sentiment_wc_chart = echarts.init(this.$refs.aspect_sentiment_wc);
       var aspect_sentiment_wc_option = {
@@ -423,7 +398,7 @@ export default {
     // 图6
     aspect_sentiment_hist_visual() {
       var that = this
-      that.aw_visible = false;  that.ah_visible = false;  that.aow_visible = false;
+      that.aw_visible = false; that.ah_visible = false; that.aow_visible = false;
       that.aoh_visible = false; that.asw_visible = false; that.ash_visible = true;
       var aspect_sentiment_hist_chart = echarts.init(this.$refs.aspect_sentiment_hist);
       var aspect_sentiment_hist_option = {
@@ -445,7 +420,7 @@ export default {
           nameGap: 50, // 设置标题与轴线之间的距离
           type: 'category',
           data: this.aspect_sentiment_hist_x_data,
-          boundaryGap: ['10%','10%'],   //两边留白
+          boundaryGap: ['10%', '10%'],   //两边留白
           axisLabel: {  //x轴文字的配置
             show: true,
             interval: 0,//使x轴文字显示全
@@ -458,13 +433,13 @@ export default {
           nameLocation: 'middle', // 设置标题位置
           nameGap: 20, // 设置标题与轴线之间的距离
           type: 'value',
-          axisLine:{show:true},
-          axisTick:{show:true}
+          axisLine: { show: true },
+          axisTick: { show: true }
         },
         {
           type: 'value',
-          axisLine:{show:true},
-          axisTick:{show:true},
+          axisLine: { show: true },
+          axisTick: { show: true },
         }],
         series: [{
           name: 'positives',
@@ -484,17 +459,18 @@ export default {
 </script>
 
 <style scoped>
-  .tip {
-    font-family: 宋体;
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    margin-bottom: 10px;
-    text-align: left;
-  }
-  .chart-container {
-    width: 500%;
-    height: 400px;
-    margin-left: 400px;
-  }
+.tip {
+  font-family: 宋体;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.chart-container {
+  width: 500%;
+  height: 400px;
+  margin-left: 400px;
+}
 </style>

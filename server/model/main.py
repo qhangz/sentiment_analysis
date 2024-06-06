@@ -116,7 +116,7 @@ def getBarrageTime_(url, type_='Video'):
     return time_barrage
 
 
-# get bisualize image
+# get visualize image
 def bin_visualize_(times, segment=15):
     '''
     可视化分箱后的数据。
@@ -497,3 +497,59 @@ def analyseText(text):
     sen.load('./model/sentiment.marshal')
 
     return sen.classify(text)
+
+def topTextBarrage_(url, segment=15):
+    '''
+    获取全文弹幕中权重最高的前十个关键词及其对应的TextRank算法数值。
+
+    Parameters
+    ----------
+    url : str
+        B站的视频链接。
+        例：'https://www.bilibili.com/video/BV1wq4y1s7S5/?spm_id_from=333.337.search-card.all.click&vd_source=1d24f52164a3ed510e0b7386c010cc2e'。
+
+    segment : int, optional
+        分箱的时间间隔，默认值为15。
+
+    Returns
+    -------
+    keyTop_json : str
+        包含权重最高的前十个关键词及其对应的TextRank算法数值的JSON字符串。
+
+使用 jieba.analyse.textrank 函数对拼接后的弹幕文本进行关键词提取。这里使用了停用词表，并限制了词性（只考虑名词、动词、形容词等）。
+提取前 10 个权重最高的关键词及其对应的权重值。
+    '''
+
+    time_barrage, segmentRangeTop = getBinVisualize(url, segment)
+    sentence = '\n'.join(time_barrage['danmu'])
+
+    allowPOS = ('n', 'nr', 'ns', 'nz', 'v', 'vd', 'vn', 'a', 'q')
+    jieba.analyse.set_stop_words('./model/stopwords.txt')
+    keyTop_10 = jieba.analyse.textrank(sentence,
+                                       topK=20,
+                                       withWeight=True,
+                                       allowPOS=allowPOS)
+    keyTop_df = pd.DataFrame(keyTop_10,
+                             columns=['key', 'textrank'])
+
+    # Convert DataFrame to a list of dictionaries
+    keyTop_list = keyTop_df.to_dict(orient='records')
+
+    # Remove backslashes from keys
+    for item in keyTop_list:
+        item['key'] = item['key'].replace('\\', '')
+
+    for item in keyTop_list:
+        item['probability'] = analyseText(item['key'])
+        if item['probability'] < 0.5:
+            item['sentiment'] = '消极'
+        elif item['probability'] > 0.5:
+            item['sentiment'] = '积极'
+        else:
+            item['sentiment'] = '中立'
+
+    return keyTop_list
+
+
+
+
