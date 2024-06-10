@@ -1,80 +1,32 @@
 <template>
   <div class="app-container">
     <el-card class="box-card">
-      <div class="tip" style="text-align: center;">
-        您感兴趣的视频:
-        <el-select v-model="course_key" placeholder="请选择类型" style="padding-top:10px; padding-bottom:10px;">
-        <el-option
-          v-for="item in course_key_options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value">
-        </el-option>
-        </el-select>
-        <br/>
-        您最关注的方面:
-        <el-select v-model="concern_category" placeholder="请选择您关注的方面" style="padding-top:10px; padding-bottom:10px;">
-        <el-option
-          v-for="item in concern_category_options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value">
-        </el-option>
-        </el-select>
-        <br/>
-        <!-- 您最适合的难度:
-        <el-select v-model="difficulty_coefficient" placeholder="请选择您适合的难度" style="padding-top:10px; padding-bottom:10px;">
-        <el-option
-          v-for="item in difficulty_coefficient_options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value">
-        </el-option>
-        </el-select> -->
+      <div class="tip">
+        请输入您感兴趣的视频:
       </div>
+      <el-input v-model="textarea" type="textarea" :disabled="stage" :rows="1" placeholder="请输入您感兴趣的视频的链接" clearable />
     </el-card>
+
     <el-row style="text-align: center; padding-top:20px; padding-bottom:20px;">
       <el-button type="info" round @click="clear()">清空内容</el-button>
       <el-button type="primary" round @click="recommend()">推荐视频</el-button>
     </el-row>
+
     <el-card v-show="visible" class="box-card">
       <div v-show="visible" class="tip">
         推荐结果:
       </div>
       <!-- <el-input v-show="visible" v-model="result" type="textarea" :rows="13" /> -->
-      <el-table
-        :data="recommendResults"
-        height="500"
-        border
-        style="width: 100%"
-      >
-        <el-table-column
-          prop="course_rank"
-          label="排名"
-        />
-        <el-table-column
-          prop="course_score"
-          label="评分"
-        />
-        <el-table-column
-          prop="course_name"
-          label="课程"
-        />
-        <el-table-column
-          prop="university_name"
-          label="大学"
-        />
-        <el-table-column
-          prop="teacher_name"
-          label="教师"
-        />
-        <el-table-column
-          prop="url"
-          label="链接"
-        >
-        <template slot-scope="props">
-          <el-link :href="props.row.url" target="_blank">{{props.row.url}}</el-link>
-	      </template>
+      <el-table :data="recommendResults" height="500" border style="width: 100%">
+        <el-table-column prop="course_rank" label="排名" />
+        <el-table-column prop="course_score" label="评分" />
+        <el-table-column prop="course_name" label="课程" />
+        <el-table-column prop="university_name" label="大学" />
+        <el-table-column prop="teacher_name" label="教师" />
+        <el-table-column prop="url" label="链接">
+          <template slot-scope="props">
+            <el-link :href="props.row.url" target="_blank">{{ props.row.url }}</el-link>
+          </template>
         </el-table-column>
       </el-table>
     </el-card>
@@ -90,59 +42,13 @@ export default {
       recommendResults: '', // 情感分析结果
       stage: false,
       visible: false, // 设置情感分析结果的可见性
-      course_key_options: [{
-          value: '数据结构',
-          label: '数据结构'
-        }, {
-          value: '操作系统',
-          label: '操作系统'
-        }, {
-          value: '计算机组成原理',
-          label: '计算机组成原理'
-        }, {
-          value: '计算机网络',
-          label: '计算机网络'
-        }],
-        course_key: '',
-        concern_category_options: [{
-          value: '系统全面',
-          label: '系统全面'
-        }, {
-          value: '耐心细致',
-          label: '耐心细致'
-        }, {
-          value: '条理清晰',
-          label: '条理清晰'
-        }, {
-          value: '风趣幽默',
-          label: '风趣幽默'
-        }, {
-          value: '设计巧妙',
-          label: '设计巧妙'
-        }, {
-          value: '视频质量',
-          label: '视频质量'
-        }],
-        concern_category: '',
-        difficulty_coefficient_options: [{
-          value: '较难',
-          label: '较难'
-        }, {
-          value: '适中',
-          label: '适中'
-        }, {
-          value: '偏易',
-          label: '偏易'
-        }],
-        difficulty_coefficient: ''
+
     }
   },
   methods: {
     clear() {
       var that = this
-      that.course_key = ''
-      that.concern_category = ''
-      that.difficulty_coefficient = ''
+
       that.recommendResults = ''
       that.visible = false
       that.$message({
@@ -204,7 +110,7 @@ export default {
         that.visible = true
         that.$message({
           showClose: true,
-          message: '成功为您个性化推荐课程！',
+          message: '成功为您个性化推荐视频！',
           type: 'success'
         })
       }).catch((error) => {
@@ -224,10 +130,10 @@ export default {
 </script>
 
 <style scoped>
-  .tip {
-    font-family: 宋体;
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
+.tip {
+  font-family: 宋体;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
 </style>

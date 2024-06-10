@@ -56,9 +56,9 @@ export const constantRoutes = [
   },
 
   {
-    path: '/demo',
+    path: '/analysis',
     component: Layout,
-    redirect: '/demo',
+    redirect: '/analysis',
     name: 'DEMO',
     meta: { title: '功能体验模块', icon: 'el-icon-magic-stick' },
     children: [
@@ -66,13 +66,19 @@ export const constantRoutes = [
         path: 'singleAnalysis',
         name: 'singleAnalysis',
         component: () => import('@/views/singleAnalysis/index'),
-        meta: { title: '单条评论分析', icon: 'el-icon-document'  }
+        meta: { title: '单条评论分析', icon: 'el-icon-document-remove' }
+      },
+      {
+        path: 'superiorAnalysis',
+        name: 'superiorAnalysis',
+        component: () => import('@/views/superiorAnalysis/index'),
+        meta: { title: '评论分析优化', icon: 'el-icon-document' }
       },
       {
         path: 'gptAnalysis',
         name: 'gptAnalysis',
         component: () => import('@/views/gptAnalysis/index'),
-        meta: { title: 'ChatGPT分析', icon: 'el-icon-chat-line-square'}
+        meta: { title: 'ChatGPT分析', icon: 'el-icon-chat-line-square' }
       }
     ]
   },

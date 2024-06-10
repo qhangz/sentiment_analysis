@@ -15,13 +15,6 @@
       <div v-show="visible" class="tip">
         情感分析结果:  {{ analysisResult.sentiment }}, {{ analysisResult.probability }}
       </div>
-      <!-- <el-input v-show="visible" v-model="result" type="textarea" :rows="13" /> -->
-      <!-- <el-table :data="analysisResult" height="290" border style="width: 100%">
-        <el-table-column prop="aspect" label="方面" />
-        <el-table-column prop="category" label="类别" />
-        <el-table-column prop="opinions" label="观点" />
-        <el-table-column prop="sentiment" label="情感" />
-      </el-table> -->
     </el-card>
   </div>
 </template>
@@ -88,31 +81,6 @@ export default {
               type: 'error'
             });
           });
-
-        // // 请求后端单文本情感分析接口，请求方法为POST，请求体格式为JSON，字段text为要进行情感分析的文本
-        // axios.post('http://localhost:5000/api/analyse/text', {
-        //   text: that.textarea
-        // }).then((response) => {
-        //   console.log(response.data)
-        //   // 获取接口返回的情感分析预测结果并更新界面数据
-        //   that.analysisResult = response.data.singleAnalysisResult
-        //   that.visible = true
-        //   that.$message({
-        //     showClose: true,
-        //     message: '情感分析完成！',
-        //     type: 'success'
-        //   })
-        // }).catch((error) => {
-        //   // 捕获异常并弹窗提示
-        //   console.log(error)
-        //   that.analysisResult = ''
-        //   that.visible = false
-        //   that.$message({
-        //     showClose: true,
-        //     message: '请求异常，请检查后端服务模块！',
-        //     type: 'error'
-        //   })
-        // })
       }
     }
   }

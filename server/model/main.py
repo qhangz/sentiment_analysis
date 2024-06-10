@@ -14,6 +14,7 @@ from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 import io
 import model.sa.sentiment as sen
+import model.sa.sentiment as supesen
 
 # 设置库中的参数
 warnings.filterwarnings('ignore')
@@ -491,6 +492,7 @@ def generateWordCloud_(url, segment=15, mask=False, maskpath=None):
 
     return img_bytes
 
+
 def analyseText(text):
     # print('当前路径：', os.getcwd())
     # route=os.getcwd()
@@ -498,7 +500,8 @@ def analyseText(text):
 
     return sen.classify(text)
 
-def topTextBarrage_(url, segment=15):
+
+def topTextBarrage_(url, segment=15, topKey=10):
     '''
     获取全文弹幕中权重最高的前十个关键词及其对应的TextRank算法数值。
 
@@ -516,8 +519,8 @@ def topTextBarrage_(url, segment=15):
     keyTop_json : str
         包含权重最高的前十个关键词及其对应的TextRank算法数值的JSON字符串。
 
-使用 jieba.analyse.textrank 函数对拼接后的弹幕文本进行关键词提取。这里使用了停用词表，并限制了词性（只考虑名词、动词、形容词等）。
-提取前 10 个权重最高的关键词及其对应的权重值。
+    使用 jieba.analyse.textrank 函数对拼接后的弹幕文本进行关键词提取。这里使用了停用词表，并限制了词性（只考虑名词、动词、形容词等）。
+    提取前 10 个权重最高的关键词及其对应的权重值。
     '''
 
     time_barrage, segmentRangeTop = getBinVisualize(url, segment)
@@ -526,7 +529,7 @@ def topTextBarrage_(url, segment=15):
     allowPOS = ('n', 'nr', 'ns', 'nz', 'v', 'vd', 'vn', 'a', 'q')
     jieba.analyse.set_stop_words('./model/stopwords.txt')
     keyTop_10 = jieba.analyse.textrank(sentence,
-                                       topK=20,
+                                       topK=topKey,
                                        withWeight=True,
                                        allowPOS=allowPOS)
     keyTop_df = pd.DataFrame(keyTop_10,
@@ -551,5 +554,12 @@ def topTextBarrage_(url, segment=15):
     return keyTop_list
 
 
-
-
+def superiorText(text):
+    supesen.load('./model/superior.marshal')
+    analyseResult = supesen.classify(text)
+    if analyseResult < 0.5:
+        supesen.add_training_negdata(text)
+    elif analyseResult > 0.5:
+        supesen.add_training_posdata(text)
+    supesen.save('./model/superior.marshal')
+    return analyseResult

@@ -43,15 +43,19 @@
     </el-card>
     <el-row style="text-align: center; padding-top:10px;padding-bottom:10px;"></el-row>
     <!--分析结果可视化-->
+
     <el-card v-show="vis_visible" class="box-card">
       <img class="vis-img" :src="visImg" alt="Result Image" />
     </el-card>
+
     <el-card v-show="sen_visible" class="box-card">
       <img class="sen-img" :src="senImg" alt="Result Image" />
     </el-card>
+
     <el-card v-show="wc_visible" class="box-card">
       <img class="wc-img" :src="wcImg" alt="Result Image" />
     </el-card>
+
 
   </div>
 </template>
@@ -72,6 +76,8 @@ export default {
       wc_visible: false,
       sen_visible: false,
 
+      vis_notready: true,
+
       visImg: null,
       senImg: null,
       wcImg: null,
@@ -88,6 +94,8 @@ export default {
       that.vis_visible = false
       that.sen_visible = false
       that.wc_visible = false
+
+      that.vis_notready = true
 
       that.visImg = null,
         that.senImg = null,
@@ -163,6 +171,7 @@ export default {
           // console.log('imageUrl:', imageUrl);
           that.visImg = imageUrl;
           console.log('pre visualize');
+          that.vis_notready = false
         })
         .catch((error) => {
           console.error('Error:', error);

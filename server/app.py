@@ -5,6 +5,8 @@ import os
 from service.data import create_database
 import service.analyse
 import service.gpt
+import service.superior
+import service.recommend
 
 
 app = Flask(__name__)
@@ -27,6 +29,8 @@ data_db.isolation_level = None
 # 服务注册
 service.analyse.register(app, data_db)
 service.gpt.register(app, data_db)
+service.superior.register(app, data_db)
+service.recommend.register(app, data_db)
 
 @app.route("/")
 def hello_world():
