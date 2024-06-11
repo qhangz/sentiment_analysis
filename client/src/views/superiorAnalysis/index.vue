@@ -17,7 +17,7 @@
                 情感分析结果:
                 <ul>
                     <li v-for="(result, index) in analysisResultList" :key="index">
-                        {{ index + 1 }}. Sentiment: {{ result.sentiment }}, Probability: {{ result.probability }}
+                        {{ index + 1 }}. 情感倾向: {{ result.sentiment }}, 情感得分: {{ result.probability }}
                     </li>
                 </ul>
             </div>
@@ -66,7 +66,7 @@ export default {
                 let formData = new FormData();
                 formData.append('text', that.textarea);
 
-                axios.post('http://localhost:5000/api/analyse/text', formData)
+                axios.post('http://localhost:5000/api/superior/text', formData)
                     .then((response) => {
                         // console.log(response.data.data.probability);
                         // 获取接口返回的情感分析预测结果并更新界面数据

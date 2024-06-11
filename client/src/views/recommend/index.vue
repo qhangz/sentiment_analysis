@@ -16,19 +16,8 @@
       <div v-show="visible" class="tip">
         推荐结果:
       </div>
-      <!-- <el-input v-show="visible" v-model="result" type="textarea" :rows="13" /> -->
-      <el-table :data="recommendResults" height="500" border style="width: 100%">
-        <el-table-column prop="course_rank" label="排名" />
-        <el-table-column prop="course_score" label="评分" />
-        <el-table-column prop="course_name" label="课程" />
-        <el-table-column prop="university_name" label="大学" />
-        <el-table-column prop="teacher_name" label="教师" />
-        <el-table-column prop="url" label="链接">
-          <template slot-scope="props">
-            <el-link :href="props.row.url" target="_blank">{{ props.row.url }}</el-link>
-          </template>
-        </el-table-column>
-      </el-table>
+      <el-input v-model="resarea" type="textarea" :disabled="stage" :rows="20" placeholder="推荐结果" clearable />
+
     </el-card>
   </div>
 </template>
@@ -42,13 +31,14 @@ export default {
       recommendResults: '', // 情感分析结果
       stage: false,
       visible: false, // 设置情感分析结果的可见性
-
+      resarea: ''
     }
   },
   methods: {
     clear() {
       var that = this
-
+      that.textarea = ''
+      that.resarea = ''
       that.recommendResults = ''
       that.visible = false
       that.$message({
@@ -59,39 +49,19 @@ export default {
     },
     recommend() {
       var that = this
+      that.resarea = ''
       // 获取用户输入框输入的要进行情感分析的文本
-      if (that.course_key === '') {
+      if (that.textarea === '') {
         this.$message({
           showClose: true,
-          message: '选择课程不能为空',
+          message: '输入视频链接不能为空',
           type: 'warning'
         })
-        that.recommendResults = ''
+        that.analysisResult = ''
         that.visible = false
         return
       }
-      if (that.concern_category === '') {
-        this.$message({
-          showClose: true,
-          message: '选择方面不能为空',
-          type: 'warning'
-        })
-        that.recommendResults = ''
-        that.visible = false
-        return
-      }
-      /*
-      if (that.difficulty_coefficient === '') {
-        this.$message({
-          showClose: true,
-          message: '选择难度不能为空',
-          type: 'warning'
-        })
-        that.recommendResults = ''
-        that.visible = false
-        return
-      }
-      */
+
       that.visible = true
       that.$message({
         showClose: true,
@@ -99,31 +69,30 @@ export default {
         type: 'success'
       })
       // 请求后端数据库推荐接口，请求方法为POST，请求体格式为JSON
-      axios.post('http://127.0.0.1:8000/v1/dbRecommend', {
-        course_key: that.course_key,
-        concern_category: that.concern_category,
-        difficulty_coefficient: that.difficulty_coefficient
-      }).then((response) => {
-        console.log(response.data)
-        // 获取接口返回的推荐结果并更新界面数据
-        that.recommendResults = response.data.dbRecommendResults
-        that.visible = true
-        that.$message({
-          showClose: true,
-          message: '成功为您个性化推荐视频！',
-          type: 'success'
+      let formData = new FormData();
+      formData.append('url', that.textarea);
+      axios.post('http://localhost:5000/api/recommend/video', formData)
+        .then((response) => {
+          console.log(response.data)
+          // 获取接口返回的推荐结果并更新界面数据
+          that.resarea = response.data.data.result
+          that.visible = true
+          that.$message({
+            showClose: true,
+            message: '成功为您个性化推荐视频！',
+            type: 'success'
+          })
+        }).catch((error) => {
+          // 捕获异常并弹窗提示
+          console.log(error)
+          that.recommendResults = ''
+          that.visible = false
+          that.$message({
+            showClose: true,
+            message: '请求异常，请检查后端服务模块！',
+            type: 'error'
+          })
         })
-      }).catch((error) => {
-        // 捕获异常并弹窗提示
-        console.log(error)
-        that.recommendResults = ''
-        that.visible = false
-        that.$message({
-          showClose: true,
-          message: '请求异常，请检查后端服务模块！',
-          type: 'error'
-        })
-      })
     }
   }
 }

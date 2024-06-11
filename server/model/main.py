@@ -563,3 +563,47 @@ def superiorText(text):
         supesen.add_training_posdata(text)
     supesen.save('./model/superior.marshal')
     return analyseResult
+
+
+def topTextBarrage(url, segment=15, topKey=10):
+    '''
+    获取全文弹幕中权重最高的前十个关键词及其对应的TextRank算法数值。
+
+    Parameters
+    ----------
+    url : str
+        B站的视频链接。
+        例：'https://www.bilibili.com/video/BV1wq4y1s7S5/?spm_id_from=333.337.search-card.all.click&vd_source=1d24f52164a3ed510e0b7386c010cc2e'。
+
+    segment : int, optional
+        分箱的时间间隔，默认值为15。
+
+    Returns
+    -------
+    keyTop_json : str
+        包含权重最高的前十个关键词及其对应的TextRank算法数值的JSON字符串。
+
+    '''
+
+    time_barrage, segmentRangeTop = getBinVisualize(url, segment)
+    sentence = '\n'.join(time_barrage['danmu'])
+
+    allowPOS = ('n', 'nr', 'ns', 'nz', 'v', 'vd', 'vn', 'a', 'q')
+    jieba.analyse.set_stop_words('./model/stopwords.txt')
+    keyTop_10 = jieba.analyse.textrank(sentence,
+                                       topK=topKey,
+                                       withWeight=True,
+                                       allowPOS=allowPOS)
+    keyTop_df = pd.DataFrame(keyTop_10,columns=['key', 'textrank'])
+
+    # Convert DataFrame to a list of dictionaries
+    keyTop_list = keyTop_df.to_dict(orient='records')
+
+    # Remove backslashes from keys
+    for item in keyTop_list:
+        item['key'] = item['key'].replace('\\', '')
+
+    return keyTop_list
+
+
+

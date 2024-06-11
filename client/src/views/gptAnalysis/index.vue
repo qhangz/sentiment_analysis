@@ -17,8 +17,7 @@
             <div v-show="chatVisible" class="tip">
                 ChatGPT回复:
             </div>
-            <el-input v-model="resarea" type="textarea" :disabled="stage" :rows="6" placeholder="ChatGPT回复"
-                clearable />
+            <el-input v-model="resarea" type="textarea" :disabled="stage" :rows="6" placeholder="ChatGPT回复" clearable />
         </el-card>
         <!-- 情感分析框 -->
         <el-card v-show="anaVisible" class="box-card">

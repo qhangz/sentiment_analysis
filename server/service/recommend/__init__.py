@@ -26,11 +26,26 @@ def gpt_35_api(messages: list):
 
 def register(app: flask.Flask, data_db: sqlite3.Connection):
     @app.route('/api/recommend/video', methods=['POST'])
-    def recommend_vedio():
+    def recommend_video():
         url = flask.request.form['url']
         # result = model_analyse.recommendVideo(url)
-        top_text = model_analyse.topTextBarrage_(url,15,20)
+        top_text = model_analyse.topTextBarrage(url,15,10)
+        # 循环遍历将top_text中的key，将key组合成一句话，用逗号隔开
+        top_text_str = ''
+        for item in top_text:
+            top_text_str += item['key'] + ','
+        top_text_str = top_text_str[:-1]
+
+        question='推荐一些关于“'+top_text_str+'”的bilibili视频，给出视频的链接。'
+        result = gpt_35_api([{'role': 'user', 'content': question}, ])
+
+
+
+
         response_data = {
-            'toptext': top_text
+            # 'toptext': top_text,
+            # 'top_text_str': top_text_str,
+            # 'question': question,
+            'result': result,
         }
-        return utils.Resp(200, response_data, 'analyse successfully').to_json()
+        return utils.Resp(200, response_data, 'recommend successfully').to_json()

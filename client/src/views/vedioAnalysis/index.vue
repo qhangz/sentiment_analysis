@@ -45,15 +45,15 @@
     <!--分析结果可视化-->
 
     <el-card v-show="vis_visible" class="box-card">
-      <img class="vis-img" :src="visImg" alt="Result Image" />
+      <img class="vis-img" :src="visImg" alt="图像生成中..." />
     </el-card>
 
     <el-card v-show="sen_visible" class="box-card">
-      <img class="sen-img" :src="senImg" alt="Result Image" />
+      <img class="sen-img" :src="senImg" alt="图像生成中..." />
     </el-card>
 
     <el-card v-show="wc_visible" class="box-card">
-      <img class="wc-img" :src="wcImg" alt="Result Image" />
+      <img class="wc-img" :src="wcImg" alt="图像生成中..." />
     </el-card>
 
 

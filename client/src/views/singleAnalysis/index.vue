@@ -27,7 +27,7 @@ export default {
       textarea: '', // 用户输入框内输入内容
       analysisResult: '', // 情感分析结果
       stage: false,
-      visible: false // 设置情感分析结果的可见性
+      visible: false, // 设置情感分析结果的可见性
     }
   },
   methods: {
