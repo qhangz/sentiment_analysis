@@ -83,7 +83,19 @@ def register(app: flask.Flask, data_db: sqlite3.Connection):
         return utils.Resp(200, response_data, 'analyse successfully').to_json()
 
     @app.route('/api/analyse/toptext', methods=['POST'])
-    def top_text():
+    def top10_text():
         url = flask.request.form['url']
         top_text = model_analyse.topTextBarrage_(url,15,10)
         return utils.Resp(200, top_text, 'analyse successfully').to_json()
+
+    @app.route('/api/analyse/piechart', methods=['POST'])
+    def pie_chart():
+        url = flask.request.form['url']
+        positive_num, negative_num,neutral_num = model_analyse.pieChartData(url)
+
+        response_data= {
+            'positive_num': positive_num,
+            'negative_num': negative_num,
+            'neutral_num': neutral_num,
+        }
+        return utils.Resp(200, response_data, 'analyse successfully').to_json()

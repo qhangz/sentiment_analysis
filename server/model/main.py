@@ -606,4 +606,11 @@ def topTextBarrage(url, segment=15, topKey=10):
     return keyTop_list
 
 
+def pieChartData(url,segment=15):
+    sa_df = sentiment_analyse_(url)
+    positive_num = len(sa_df[sa_df['tag'] == 'positive'])
+    negative_num = len(sa_df[sa_df['tag'] == 'negative'])
+    neutral_num = len(sa_df[sa_df['tag'] == 'neutral'])
+
+    return positive_num,negative_num,neutral_num
 

@@ -60,7 +60,7 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/analysis',
     name: 'DEMO',
-    meta: { title: '功能体验模块', icon: 'el-icon-magic-stick' },
+    meta: { title: '文本分析模块', icon: 'el-icon-magic-stick' },
     children: [
       {
         path: 'singleAnalysis',

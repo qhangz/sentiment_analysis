@@ -12,6 +12,7 @@
     <el-row style="text-align: center; padding-top:20px;padding-bottom:20px;">
       <el-button type="info" round @click="clear()">清空内容</el-button>
       <el-button type="primary" round @click="vedioEmotionAnalysis()">情感分析</el-button>
+
     </el-row>
 
     <el-card v-show="sp_visible" class="box-card">
@@ -23,8 +24,6 @@
       </el-table>
     </el-card>
 
-    <!-- <el-card v-show="visible" class="box-card">
-      <div v-show="visible" class="tip"> -->
     <el-card v-show="visible" class="box-card">
       <div v-show="visible" class="tip">
         视频情感分析结果：
@@ -35,10 +34,14 @@
         <el-table-column prop="probability" label="情感得分" />
         <el-table-column prop="sentiment" label="情感倾向" />
       </el-table>
+      <el-card v-show="pie_visible" class="box-card">
+        <div ref="pieChart" class="chart-container"></div>
+      </el-card>
       <el-row style="text-align: center; padding-top:20px;padding-bottom:20px;">
         <el-button type="primary" round @click="videoVisualize()">弹幕数据可视化</el-button>
         <el-button type="primary" round @click="videoSentiment()">可视化情感趋势图</el-button>
         <el-button type="primary" round @click="videoWordcloud()">弹幕词云图</el-button>
+        <!-- <el-button type="primary" round @click="getPieChart()">pie_chart</el-button> -->
       </el-row>
     </el-card>
     <el-row style="text-align: center; padding-top:10px;padding-bottom:10px;"></el-row>
@@ -64,7 +67,6 @@
 import axios from 'axios'
 import * as echarts from 'echarts'
 import 'echarts-wordcloud'
-import { getVisualize, test, getImage } from '@/api/image'
 export default {
   data() {
     return {
@@ -75,12 +77,16 @@ export default {
       vis_visible: false,
       wc_visible: false,
       sen_visible: false,
+      pie_visible: false,
 
       vis_notready: true,
 
       visImg: null,
       senImg: null,
       wcImg: null,
+
+      pie_chart_data: '',
+      pieChartRef: null // 用于存储图表实例
     }
   },
   methods: {
@@ -94,12 +100,15 @@ export default {
       that.vis_visible = false
       that.sen_visible = false
       that.wc_visible = false
+      that.pie_visible = false
 
       that.vis_notready = true
 
       that.visImg = null,
         that.senImg = null,
-        that.wcImg = null
+        that.wcImg = null,
+
+        that.pie_chart_data = ''
 
       that.$message({
         showClose: true,
@@ -150,9 +159,82 @@ export default {
             type: 'error'
           })
         })
+      // this.getPieChart()
+      this.prePieChart()
       this.preVideoVisualize()
       this.preVideoSentiment()
       this.preVideoWordcloud()
+    },
+    prePieChart() {
+      var that = this
+
+      let formData = new FormData();
+      formData.append('url', that.textarea);
+
+      axios.post('http://localhost:5000/api/analyse/piechart', formData)
+        .then((response) => {
+          const data = response.data.data;
+          // 将后端返回的数据转换为包含 value 和 name 键的对象数组
+          const formattedData = [
+            { value: data.negative_num, name: '消极' },
+            { value: data.neutral_num, name: '中立' },
+            { value: data.positive_num, name: '积极' }
+          ];
+          // 将转换后的数据赋值给 that.analysisResults
+          that.pie_chart_data = formattedData;
+          // console.log('pie data:', that.pie_chart_data);
+          this.pieChart()
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          // this.pieChart()
+        });
+    },
+    getPieChart() {
+      // 检查是否已经存在图表实例，如果存在则销毁
+      if (this.pieChartRef !== null) {
+        this.pieChartRef.dispose();
+      }
+      this.pieChartRef = echarts.init(this.$refs.pieChart)
+      var pie_chart_option = {
+        tooltip: {
+          trigger: 'item'
+        },
+        legend: {
+          top: '5%',
+          left: 'center'
+        },
+        series: [
+          {
+            name: 'Access From',
+            type: 'pie',
+            radius: ['40%', '70%'],
+            avoidLabelOverlap: false,
+            label: {
+              show: false,
+              position: 'center'
+            },
+            emphasis: {
+              label: {
+                show: true,
+                fontSize: 20,
+                fontWeight: 'bold'
+              }
+            },
+            labelLine: {
+              show: false
+            },
+            data: [
+              { value: 1048, name: 'Search Engine' },
+              { value: 735, name: 'Direct' },
+              { value: 580, name: 'Email' },
+              { value: 484, name: 'Union Ads' },
+              { value: 300, name: 'Video Ads' }
+            ]
+          }
+        ]
+      };
+      this.pieChartRef.setOption(pie_chart_option);
     },
     // 弹幕数据可视化
     preVideoVisualize() {
@@ -221,6 +303,54 @@ export default {
           console.error('Error:', error);
         });
     },
+    pieChart() {
+      // 检查是否已经存在图表实例，如果存在则销毁
+      if (this.pieChartRef !== null) {
+        this.pieChartRef.dispose();
+      }
+      this.pieChartRef = echarts.init(this.$refs.pieChart)
+      var pie_chart_option = {
+        tooltip: {
+          trigger: 'item'
+        },
+        legend: {
+          top: '5%',
+          left: 'center'
+        },
+        series: [
+          {
+            name: 'Access From',
+            type: 'pie',
+            radius: ['40%', '70%'],
+            avoidLabelOverlap: false,
+            label: {
+              show: false,
+              position: 'center'
+            },
+            emphasis: {
+              label: {
+                show: true,
+                fontSize: 20,
+                fontWeight: 'bold'
+              }
+            },
+            labelLine: {
+              show: false
+            },
+            data: this.pie_chart_data
+            // data: [
+            //   { value: 1048, name: 'Search Engine' },
+            //   { value: 735, name: 'Direct' },
+            //   { value: 580, name: 'Email' },
+            //   { value: 484, name: 'Union Ads' },
+            //   { value: 300, name: 'Video Ads' }
+            // ]
+          }
+        ]
+      };
+      this.pieChartRef.setOption(pie_chart_option);
+      this.pie_visible = true
+    },
     videoVisualize() {
       var that = this
       that.vis_visible = true;
@@ -239,6 +369,12 @@ export default {
       that.wc_visible = true;
       that.sen_visible = false;
     },
+  },
+  beforeDestroy() {
+    // 在组件销毁前销毁图表实例
+    if (this.pieChartRef !== null) {
+      this.pieChartRef.dispose();
+    }
   }
 }
 </script>
@@ -254,28 +390,30 @@ export default {
 }
 
 .chart-container {
-  width: 500%;
-  height: 400px;
-  margin-left: 400px;
+  width: 500px;
+  height: 300px;
+  /* margin-left: 400px; */
+  margin: 0 auto;
+  display: block;
 }
 
 .vis-img {
-  width: 50%;
-  height: 50%;
+  width: 70%;
+  height: 70%;
   margin: 0 auto;
   display: block;
 }
 
 .wc-img {
-  width: 50%;
-  height: 50%;
+  width: 70%;
+  height: 70%;
   margin: 0 auto;
   display: block;
 }
 
 .sen-img {
-  width: 50%;
-  height: 50%;
+  width: 70%;
+  height: 70%;
   margin: 0 auto;
   display: block;
 }

@@ -17,14 +17,14 @@
             <div v-show="chatVisible" class="tip">
                 ChatGPT回复:
             </div>
-            <el-input v-model="resarea" type="textarea" :disabled="stage" :rows="6" placeholder="ChatGPT回复" clearable />
+            <el-input v-model="resarea" type="textarea" :disabled="stage" :rows="6" placeholder="回复生成中..." clearable />
         </el-card>
         <!-- 情感分析框 -->
         <el-card v-show="anaVisible" class="box-card">
             <div v-show="anaVisible" class="tip">
                 ChatGPT情感分析结果:
             </div>
-            <el-input v-model="resultarea" type="textarea" :disabled="stage" :rows="6" placeholder="ChatGPT情感分析结果"
+            <el-input v-model="resultarea" type="textarea" :disabled="stage" :rows="6" placeholder="情感分析结果生成中..."
                 clearable />
         </el-card>
     </div>
@@ -71,13 +71,13 @@ export default {
             } else {
                 let formData = new FormData();
                 formData.append('text', that.textarea);
-
+                that.anaVisible = true;
                 axios.post('http://localhost:5000/api/gpt/analyse', formData)
                     .then((response) => {
-                        console.log(response.data);
+                        // console.log(response.data);
                         // 获取接口返回的情感分析预测结果并更新界面数据
                         that.resultarea = response.data.data.result;
-                        that.anaVisible = true;
+
                     })
                     .catch((error) => {
                         // 捕获异常并弹窗提示
@@ -107,13 +107,13 @@ export default {
             } else {
                 let formData = new FormData();
                 formData.append('text', that.textarea);
-
+                that.chatVisible = true;
                 axios.post('http://localhost:5000/api/gpt/chat', formData)
                     .then((response) => {
-                        console.log(response.data);
+                        // console.log(response.data);
                         // 获取接口返回的情感分析预测结果并更新界面数据
                         that.resarea = response.data.data.result;
-                        that.chatVisible = true;
+
                     })
                     .catch((error) => {
                         // 捕获异常并弹窗提示
