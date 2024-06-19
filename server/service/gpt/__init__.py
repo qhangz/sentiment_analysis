@@ -5,11 +5,19 @@ import io
 from openai import OpenAI
 import model.main as model_analyse
 from transformers import AutoTokenizer, AutoModel
+import os
+
+# 定义全局变量
+is_glm_loaded = False
+tokenizer = None
+model = None
+
 client = OpenAI(
     # defaults to os.environ.get("OPENAI_API_KEY")
     api_key="sk-esV4Eck7DXaxMBMINwZmm06DaBqmxgzkeOp9pNzgaz3f74SR",
     base_url="https://api.chatanywhere.tech/v1"
 )
+
 
 # 非流式响应
 def gpt_35_api(messages: list):
@@ -42,12 +50,17 @@ def gpt_35_api_stream(messages: list):
 
 
 def chatGLM(messages):
-    tokenizer = AutoTokenizer.from_pretrained("model/chatglm", trust_remote_code=True)
-    # model = AutoModel.from_pretrained("model/chatglm", trust_remote_code=True, device='cuda')
-    model = AutoModel.from_pretrained("model/chatglm", trust_remote_code=True, ignore_mismatched_sizes=True)
-    model = model.eval()
+    # print("chatGLM begin")
+    global is_glm_loaded, tokenizer, model
+    if not is_glm_loaded:
+        tokenizer = AutoTokenizer.from_pretrained("./model/chatglm", trust_remote_code=True)
+        # model = AutoModel.from_pretrained("model/chatglm", trust_remote_code=True, device='cuda')
+        model = AutoModel.from_pretrained("./model/chatglm", trust_remote_code=True, ignore_mismatched_sizes=True)
+        model = model.eval()
+        is_glm_loaded = True
+
     response, history = model.chat(tokenizer, messages, history=[])
-    print(response)
+    print('res', response)
     return response
 
 
@@ -62,10 +75,10 @@ def register(app: flask.Flask, data_db: sqlite3.Connection):
         # 如果result中包含"积极"或"消极"，则提取出来
         if '积极' in result:
             sentiment = 'positive'
-            model_analyse.gptSuperiorText(text,sentiment)
+            model_analyse.gptSuperiorText(text, sentiment)
         elif '消极' in result:
             sentiment = 'negative'
-            model_analyse.gptSuperiorText(text,sentiment)
+            model_analyse.gptSuperiorText(text, sentiment)
 
         response_data = {
             'result': result,
@@ -87,7 +100,19 @@ def register(app: flask.Flask, data_db: sqlite3.Connection):
     @app.route('/api/glm/chat', methods=['POST'])
     def chatglm():
         text = flask.request.form['text']
-        response=chatGLM(text)
+        response = chatGLM(text)
+        response_data = {
+            'result': response,
+        }
+        return utils.Resp(200, response_data, 'chat successfully').to_json()
+
+    @app.route('/api/glm/test', methods=['POST'])
+    def test():
+        text = flask.request.form['text']
+        if is_glm_loaded:
+            response = '模型已经加载'
+        else:
+            response = '模型未加载'
         response_data = {
             'response': response,
         }

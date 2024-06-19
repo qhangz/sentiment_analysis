@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: '面向b站视频弹幕的情感分析系统',
+  title: '基于B站视频弹幕的情感分析系统',
 
   /**
    * @type {boolean} true | false

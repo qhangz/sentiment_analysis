@@ -110,7 +110,7 @@ export default {
                 that.chatVisible = true;
                 axios.post('http://localhost:5000/api/gpt/chat', formData)
                     .then((response) => {
-                        // console.log(response.data);
+                        console.log(response.data);
                         // 获取接口返回的情感分析预测结果并更新界面数据
                         that.resarea = response.data.data.result;
 

@@ -16,7 +16,7 @@
       <div v-show="visible" class="tip">
         推荐结果:
       </div>
-      <el-input v-model="resarea" type="textarea" :disabled="stage" :rows="20" placeholder="推荐结果" clearable />
+      <el-input v-model="resarea" type="textarea" :disabled="stage" :rows="20" placeholder="推荐结果加载中..." clearable />
 
     </el-card>
   </div>
