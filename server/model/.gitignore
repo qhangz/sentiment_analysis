@@ -1,6 +1,5 @@
 .idea
 __pycache__
-venv
+chatglm
 test
-sa
 analysis_result

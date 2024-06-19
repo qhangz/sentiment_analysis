@@ -35,7 +35,7 @@ export default {
               left: '17%',
               top: 'center',
               style: {
-                text: '面向b站视频弹幕的情感分析系统',
+                text: '基于B站视频弹幕的情感分析系统',
                 fontSize: 70,
                 fontWeight: 'bold',
                 lineDash: [0, 200],

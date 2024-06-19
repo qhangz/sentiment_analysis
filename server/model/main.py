@@ -265,7 +265,7 @@ def getBinVisualize(url, segment=15):
 
 def sentiment_analyse_(url, segment=15):
     '''
-    使用snownlp库对弹幕进行情感分析，并获取情感得分和标签。
+    对弹幕进行情感分析，并获取情感得分和标签。
 
     Parameters
     ----------
@@ -558,12 +558,28 @@ def superiorText(text):
     supesen.load('./model/superior.marshal')
     analyseResult = supesen.classify(text)
     if analyseResult < 0.5:
-        supesen.add_training_negdata(text)
+        # supesen.add_training_negdata(text)
+        for i in range(10):
+            supesen.add_training_negdata(text)
     elif analyseResult > 0.5:
-        supesen.add_training_posdata(text)
+        # supesen.add_training_posdata(text)
+        for i in range(10):
+            supesen.add_training_posdata(text)
+
     supesen.save('./model/superior.marshal')
     return analyseResult
 
+def gptSuperiorText(text,sentiment):
+    supesen.load('./model/superior.marshal')
+    if sentiment=='positive':
+        for i in range(5):
+            supesen.add_training_posdata(text)
+    elif sentiment=='negative':
+        for i in range(5):
+            supesen.add_training_negdata(text)
+
+    supesen.save('./model/superior.marshal')
+    return None
 
 def topTextBarrage(url, segment=15, topKey=10):
     '''
@@ -594,7 +610,7 @@ def topTextBarrage(url, segment=15, topKey=10):
                                        topK=topKey,
                                        withWeight=True,
                                        allowPOS=allowPOS)
-    keyTop_df = pd.DataFrame(keyTop_10,columns=['key', 'textrank'])
+    keyTop_df = pd.DataFrame(keyTop_10, columns=['key', 'textrank'])
 
     # Convert DataFrame to a list of dictionaries
     keyTop_list = keyTop_df.to_dict(orient='records')
@@ -606,11 +622,10 @@ def topTextBarrage(url, segment=15, topKey=10):
     return keyTop_list
 
 
-def pieChartData(url,segment=15):
+def pieChartData(url, segment=15):
     sa_df = sentiment_analyse_(url)
     positive_num = len(sa_df[sa_df['tag'] == 'positive'])
     negative_num = len(sa_df[sa_df['tag'] == 'negative'])
     neutral_num = len(sa_df[sa_df['tag'] == 'neutral'])
 
-    return positive_num,negative_num,neutral_num
-
+    return positive_num, negative_num, neutral_num

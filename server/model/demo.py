@@ -30,7 +30,6 @@ def demo(url, segment=15, mask=False, resultpath=None):
 
     resultpath : str, optional
         结果保存的路径。
-        例：'/home/ty/work'。
 
     Returns
     -------

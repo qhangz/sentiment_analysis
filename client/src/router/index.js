@@ -78,7 +78,7 @@ export const constantRoutes = [
         path: 'gptAnalysis',
         name: 'gptAnalysis',
         component: () => import('@/views/gptAnalysis/index'),
-        meta: { title: 'ChatGPT分析', icon: 'el-icon-chat-line-square' }
+        meta: { title: '大模型分析', icon: 'el-icon-chat-line-square' }
       }
     ]
   },

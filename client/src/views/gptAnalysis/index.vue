@@ -2,9 +2,9 @@
     <div class="app-container">
         <el-card class="box-card">
             <div class="tip">
-                给ChatGPT发送消息:
+                给大模型发送消息:
             </div>
-            <el-input v-model="textarea" type="textarea" :disabled="stage" :rows="6" placeholder="请输入与ChatGPT的对话"
+            <el-input v-model="textarea" type="textarea" :disabled="stage" :rows="6" placeholder="请输入与大模型的对话"
                 clearable />
         </el-card>
         <el-row style="text-align: center; padding-top:20px; padding-bottom:20px;">
@@ -15,14 +15,14 @@
         <!-- 发送消息框 -->
         <el-card v-show="chatVisible" class="box-card">
             <div v-show="chatVisible" class="tip">
-                ChatGPT回复:
+                大模型回复:
             </div>
             <el-input v-model="resarea" type="textarea" :disabled="stage" :rows="6" placeholder="回复生成中..." clearable />
         </el-card>
         <!-- 情感分析框 -->
         <el-card v-show="anaVisible" class="box-card">
             <div v-show="anaVisible" class="tip">
-                ChatGPT情感分析结果:
+                大模型情感分析结果:
             </div>
             <el-input v-model="resultarea" type="textarea" :disabled="stage" :rows="6" placeholder="情感分析结果生成中..."
                 clearable />
